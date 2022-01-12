@@ -48,8 +48,7 @@ Google Chrome recommended policies are applied as plist:
     - user: root
     - group: root
     - mode: '0644'
-    - content:
-      - {{ chrome._policies.recommended | json }}
+    - dataset: {{ chrome._policies.recommended | json }}
 
 MacOS plist cache is updated:
   cmd.run:
