@@ -1,7 +1,7 @@
 {%- from 'tool-chrome/map.jinja' import chrome -%}
 
 {%- set pkg = salt['match.filter_by']({
-  'stable': 'google-chrome',
+  'stable': 'google-chrome-stable',
   'dev': 'google-chrome-dev',
   'beta': 'google-chrome-beta'
   }, minion_id=chrome.version) -%}
