@@ -2,13 +2,59 @@
 {%- set chrome = salt['pillar.get']('tool:chrome', {'users': {}}, merge=True) -%}
 {%- set users = {} -%}
 
+{%- set version = chrome.get('version', 'stable') -%}
+
+{%- set suffix = '' if 'stable' == version else ' ' ~ version | capitalize -%}
+
+{#- @TODO windows/rpm/bsd, probably C:/Program Files/Chromium or Program Files (x86).
+    note: seems like the latter was default previously, but now the former is correct -#}
+{%- set installation_path = salt['grains.filter_by']({
+  'Darwin': '/Applications/Google Chrome{}.app'.format(suffix),
+  'Windows': 'C:/Program Files/Google/Chrome{}'.format(suffix),
+  'default': '/opt/google/chrome{}'.format(suffix | lower | replace(' ', '-'))
+  }, 'kernel') -%}
+
+{%- set linux_bin = 'google-chrome-' ~ version %}
+
+{%- set bin_path = salt['grains.filter_by']({
+  'Darwin': installation_path ~ '/Contents/MacOS/Google Chrome',
+  'Windows': installation_path ~ '/Application/chrome.exe',
+  'Linux': '/usr/bin/' ~ linux_bin,
+  }, 'kernel') -%}
+
+{%- set default_conf_dir = salt['match.filter_by'](salt['grains.filter_by']({
+  'Windows': {
+    'stable': '/AppData/Local/Google/Chrome/User Data',
+    'beta': '/AppData/Local/Google/Chrome Beta/User Data',
+    'dev': '/AppData/Local/Google/Chrome Dev/User Data',
+    'canary': '/AppData/Local/Google/Chrome SxS/User Data'
+  },
+  'Darwin': {
+    'stable': '/Library/Application Support/Google/Chrome',
+    'beta': '/Library/Application Support/Google/Chrome Beta',
+    'dev': '/Library/Application Support/Google/Chrome Dev',
+    'canary': '/Library/Application Support/Google/Chrome Canary'
+  },
+  'Linux': {
+    'stable': '/.config/google-chrome # actually XDG_CONFIG_HOME',
+    'beta': '/.config/google-chrome-beta',
+    'dev': '/.config/google-chrome-unstable',
+    'canary': False
+  }}, 'kernel'), minion_id=version) -%}
+
+{%- if not default_conf_dir %}
+  {%- do salt.log.error('There is no canary channel for Linux. This is an undefined state and will fail randomly.') %}
+{%- endif %}
+
+{%- do chrome.update({'_path': installation_path, '_bin': bin_path, 'version': version}) -%}
+
 {# {%- import_yaml "tool-chrome/policies/files/policies.yml" as policies_default -%} #}
 {%- load_yaml as extensions_default -%}
 installation_mode: normal_installed
 update_url: https://clients2.google.com/service/update2/crx
 {%- endload -%}
 
-{%- set extensions_default = salt['defaults.merge'](extensions_default, chromium.get('ext_defaults', {}), in_place=False) %}
+{%- set extensions_default = salt['defaults.merge'](extensions_default, chrome.get('ext_defaults', {}), in_place=False) %}
 
 {%- set policies = chrome.get('policies', {}) -%}
 
@@ -83,6 +129,7 @@ home: {{ user_info.home }}
 shell: {{ user_info.shell.split('/')[-1] }}
   {%- endload -%}
   {%- do users[user].update(salt['defaults.merge'](user_info, users[user], in_place=False)) -%}
+  {%- do users[user]['_chrome'].update({'confdir': user_info.home ~ default_conf_dir}) -%}
 {%- endfor -%}
 
 {%- do chrome.update({'users': users.values() | list}) -%}

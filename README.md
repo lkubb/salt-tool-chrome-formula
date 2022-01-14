@@ -56,7 +56,19 @@ tool:
 ```
 
 #### User-specific
-There are none currently. @TODO
+The following shows an example of `tool-chrome` pillar configuration. Namespace it to `tool:users` and/or `tool:chrome:users`.
+```yaml
+user:
+  chrome:
+      flags:    # Enable Chrome flags via Local State file. To find the correct syntax, it is best to set them
+                # and look inside "Local State" (json) browser:enabled_labs_experiments.
+                # chrome://version will show an overview of enabled flags in the cli version
+                # chrome://flags shows available flags and highlights those different from default
+                # mind that cli switches will not be detected on that page
+        - disable-accelerated-2d-canvas
+        - enable-javascript-harmony
+        - enable-webrtc-hide-local-ips-with-mdns@1
+```
 
 #### Formula-specific
 ```yaml
@@ -137,6 +149,9 @@ tool:
     win_gpo_source: https://dl.google.com/dl/edgedl/chrome/policy/policy_templates.zip
     # specify the source hash to enable verification. by default, verification is skipped (not recommended)
     win_gpo_source_hash: 25c6819e38e26bf87e44d3a0b9ac0cc0843776c271a6fa469679e7fae26a1591
+
+    defaults:   # user-level defaults
+      flags: []
 ```
 
 ## Notes
