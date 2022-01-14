@@ -10,7 +10,7 @@ Requested local Google Chrome extensions are synced:
   {%- endfor %}
     - mode: '0644'
     - user: root
-    - group: root
+    - group: {{ salt['user.primary_group']('root') }}
     - makedirs: true
 
 Local Google Chrome extension update file contains current versions:
@@ -22,6 +22,6 @@ Local Google Chrome extension update file contains current versions:
         local_source: {{ chrome.ext_local_source }}
         extensions: {{ chrome._local_extensions | json }}
     - user: root
-    - group: root
+    - group: {{ salt['user.primary_group']('root') }}
     - mode: '0644'
 {%- endif %}

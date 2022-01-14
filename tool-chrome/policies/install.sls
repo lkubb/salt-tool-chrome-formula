@@ -46,7 +46,7 @@ Google Chrome recommended policies are applied as plist:
     - serializer: plist
     - merge_if_exists: True
     - user: root
-    - group: root
+    - group: {{ salt['user.primary_group']('root') }}
     - mode: '0644'
     - dataset: {{ chrome._policies.recommended | json }}
 
