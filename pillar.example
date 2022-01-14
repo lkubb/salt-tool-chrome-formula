@@ -76,11 +76,11 @@ tool:
   users:
     user:
       chrome:
-          flags:    # Enable Chrome flags via Local State file. To find the correct syntax, it is best to set them
-                    # and look inside "Local State" (json) browser:enabled_labs_experiments.
-                    # chrome://version will show an overview of enabled flags in the cli version
-                    # chrome://flags shows available flags and highlights those different from default
-                    # mind that cli switches will not be detected on that page
-            - disable-accelerated-2d-canvas
-            - enable-javascript-harmony
-            - enable-webrtc-hide-local-ips-with-mdns@1
+        flags:    # Enable Chrome flags via Local State file. To find the correct syntax, it is best to set them
+                  # and look inside "Local State" (json) browser:enabled_labs_experiments.
+                  # chrome://version will show an overview of enabled flags in the cli version
+                  # chrome://flags shows available flags and highlights those different from default
+                  # mind that cli switches will not be detected on that page
+          - disable-accelerated-2d-canvas
+          - enable-javascript-harmony
+          - enable-webrtc-hide-local-ips-with-mdns@1
