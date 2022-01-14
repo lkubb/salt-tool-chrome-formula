@@ -4,9 +4,11 @@
 
 {# {%- import_yaml "tool-chrome/policies/files/policies.yml" as policies_default -%} #}
 {%- load_yaml as extensions_default -%}
-installation_mode: {{ chrome.get('ext_default_installmode', 'normal_installed') }}
-update_url: {{ chrome.get('ext_default_updateurl', 'https://clients2.google.com/service/update2/crx') }}
+installation_mode: normal_installed
+update_url: https://clients2.google.com/service/update2/crx
 {%- endload -%}
+
+{%- set extensions_default = salt['defaults.merge'](extensions_default, chromium.get('ext_defaults', {}), in_place=False) %}
 
 {%- set policies = chrome.get('policies', {}) -%}
 
@@ -19,7 +21,9 @@ update_url: {{ chrome.get('ext_default_updateurl', 'https://clients2.google.com/
     {%- set extension_config = {} -%}
     {%- if extension is mapping -%}
       {%- set extension_name = extension.keys() | list | first -%}
-      {%- set extension_config = extension[extension_name] -%}
+      {#- need to deepcopy because we might pop 'local' settings, which will seem to work, but
+          will make imports not contain local extension settings -#}
+      {%- set extension_config = salt['defaults.deepcopy'](extension[extension_name]) -%}
     {%- else -%}
       {%- set extension_name = extension -%}
     {%- endif -%}
@@ -31,6 +35,7 @@ update_url: {{ chrome.get('ext_default_updateurl', 'https://clients2.google.com/
       {%- do extension_config.pop('local') -%}
       {%- do extension_config.pop('local_version') -%}
     {%- endif -%}
+    {%- set extension_default = salt['defaults.merge'](extensions_default, data[data.keys() | list | first], in_place=False) -%}
     {%- set extension_config = salt['defaults.merge'](extensions_default, extension_config, in_place=False) -%}
     {%- do data[data.keys() | list | first].update(extension_config) -%}
     {%- do extensions_data.update(data) -%}

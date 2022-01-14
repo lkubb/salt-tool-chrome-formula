@@ -4,20 +4,19 @@ Sets up and configures Google Chrome.
 ## Usage
 Applying `tool-chrome` will make sure Google Chrome browser is configured as specified.
 
+### Extensions Unlisted on Chrome Web Store
+Managing your browser with Enterprise Policies means it is easily possible to add extensions that are not listed on the official store (see [Local Extensions](#local-extensions) for remarks on Windows). An example is found in `tool-chrome/policies/extensions/bypass-paywalls-clean.yml`. Create your own file that's mapped to `tool-chrome/policies/extensions/<name>.yml` and add it to the pillar extensions list.
+
 ### Local Extensions
 This formula provides a way to automatically install extensions from a local source. This [might not work on Windows](https://chromeenterprise.google/policies/#ExtensionSettings) by default (ie without having joined an AD domain), at least for `force_installed`. There [might be a workaround](https://hitco.at/blog/apply-edge-policies-for-non-domain-joined-devices/).
 
-Installing from local source has two implications:
-1. You can easily install extensions not available from the Chrome Web Store.
-2. Extensions are **not updated automatically**, only when you are ready to do so yourself.
+Installing from local source means that extensions are **not updated automatically**, only when you are ready to do so yourself.
 
-Generally, you need to define `ext_local_source`, which is the directory the local extensions should live in.
+1. Generally, you need to define `ext_local_source`, which is the directory the local extensions should live in.
+2. Then specify the extension's version in your pillar. That is necessary to generate a sensible response for Chrome update requests. The extension has to be available from `tool-chrome/files/extensions/<name>.crx`.
+3. When you update that file to a new version, remember to change the pillar version definition accordingly and apply the states. On the next run, Chrome will be notified of the new version and update.
 
-To get 1) working, you need to define the extension ID in a file that's mapped to `tool-chrome/policies/extensions/<name>.yml`.
-
-Then (and also to get 2) working) specify the extension's version in your pillar. That is necessary to generate a sensible response for Chrome update requests. The extension has to be available from `tool-chrome/files/extensions/<name>.crx`.
-
-When you update that file to a new version, remember to change the pillar version definition accordingly and apply the states. On the next run, Chrome will be notified of the new version and update.
+In the future, I want to automate 2/3 in this formula.
 
 ## Configuration
 ### Pillar
@@ -68,8 +67,17 @@ tool:
     # settings have to be global there. User-specific settings with policies are possible on MacOS
     # afaik where policies are installed via a profile.
     #################################################################################################
-    ext_default_installmode: normal_installed # when not specified, use this extension installation mode by default
-    ext_default_updateurl: https://clients2.google.com/service/update2/crx # if you want to update from another repo by default
+    # provide default values for ExtensionSettings
+    # see https://support.google.com/chrome/a/answer/9867568?hl=en&ref_topic=9023246
+    ext_defaults:
+      installation_mode: normal_installed # When not specified, use this extension installation mode by default.
+      # Setting update_url to something different than specified in the extension's manifest.json
+      # and enabling override of update url will cause even update requests (not just installation)
+      # to be routed there instead of the official source. For local extensions, this is set automatically.
+      override_update_url: False
+      # If you want to update from another repo by default, specify it here.
+      # For local extensions, this is set automatically.
+      update_url: https://clients2.google.com/service/update2/crx 
     # This formula allows using extensions from the local file system.
     # Those extensions will not be updated automatically from the web. Since we simulate a local repo,
     # you will need to tell salt explicitly which version you're providing and need to change
@@ -165,7 +173,8 @@ Linux:
 ## Todo
 - allow syncing master_preferences (default settings for new profiles)
 - actually manage user-specific settings
-
+- automatically download external extensions, only request link to `update.xml`
+- 
 ## References
 - https://www.chromium.org/administrators/configuring-other-preferences
 - https://www.chromium.org/administrators/linux-quick-start
@@ -179,6 +188,7 @@ Linux:
 - https://www.chromium.org/administrators/mac-quick-start
 - https://support.google.com/chrome/a/answer/9867568?hl=en&ref_topic=9023246
 - https://sunweavers.net/blog/node/135
+- https://docs.google.com/document/d/1pT0ZSbGdrbGvuCsVD2jjxrw-GVz-80rMS2dgkkquhTY/
 
 ## Further reading
 - https://www.debugbear.com/chrome-extension-performance-lookup
