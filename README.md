@@ -189,7 +189,8 @@ Linux:
 - allow syncing master_preferences (default settings for new profiles)
 - actually manage user-specific settings
 - automatically download external extensions, only request link to `update.xml`
-- 
+- [implement](https://www.reddit.com/r/uBlockOrigin/comments/qm0uxt/comment/hmpc5yl/?utm_source=share&utm_medium=web2x&context=3) [extension-specific](https://github.com/uBlockOrigin/uBlock-issues/wiki/Deploying-uBlock-Origin) [policies](https://dev.chromium.org/administrators/configuring-policy-for-extensions)
+
 ## References
 - https://www.chromium.org/administrators/configuring-other-preferences
 - https://www.chromium.org/administrators/linux-quick-start
