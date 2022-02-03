@@ -10,16 +10,16 @@ Google Chrome forced policies are applied as Group Policy:
     - computer_policy: {{ chrome._policies.forced | json }}
     - adml_language: {{ chrome.win_gpo_lang | default('en_US') }}
     - require:
-      - sls: {{ slspath }}.winadm
-      - sls: {{ slspath }}.synclocaladdons
+      - sls: {{ slsdotpath }}.winadm
+      - sls: {{ slsdotpath }}.synclocaladdons
 
 Google Chrome recommended policies are applied as Group Policy:
   lgpo.set:
     - user_policy: {{ chrome._policies.recommended | json }}
     - adml_language: {{ chrome.win_gpo_lang | default('en_US') }}
     - require:
-      - sls: {{ slspath }}.winadm
-      - sls: {{ slspath }}.synclocaladdons
+      - sls: {{ slsdotpath }}.winadm
+      - sls: {{ slsdotpath }}.synclocaladdons
 
 Group policies are updated:
   cmd.run:
