@@ -50,7 +50,7 @@ Google Chrome recommended policies are applied as plist:
     - mode: '0644'
     - dataset: {{ chrome._policies.recommended | json }}
 
-MacOS plist cache is updated:
+MacOS plist cache is updated for Chrome:
   cmd.run:
     - name: defaults read /Library/Preferences/com.google.Chrome.plist
     - onchanges:
