@@ -33,6 +33,7 @@ Group policies are updated:
 Google Chrome forced policies are applied as profile:
   macprofile.installed:
     - name: salt.tool.com.google.Chrome
+    - displayname: Chrome configuration (salt-tool)
     - description: Chrome default configuration managed by Salt state tool-chrome.policies
     - organization: salt.tool
     - removaldisallowed: False
