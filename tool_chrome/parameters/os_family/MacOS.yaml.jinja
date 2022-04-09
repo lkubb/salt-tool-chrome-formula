@@ -1,0 +1,48 @@
+{#- -*- coding: utf-8 -*- #}
+{#- vim: ft=jinja #}
+{#-
+    Set values specific to:
+      salt['config.get']('os') == MacOS.
+
+    You just need to add the key:values for this `os` that differ
+    from `defaults.yaml` + `<osarch>.yaml` + `<os_family>.yaml`.
+
+    This jinja2 file must return a valid `map.jinja` YAML.
+
+    If you do not need to provide calculated values via the `os`
+    config, you can remove this file or provide at least an empty
+    dict, e.g.
+    values: {}
+#}
+---
+values:
+  lookup:
+    paths:
+      beta:
+        bin: /Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome
+        installation: /Applications/Google Chrome Beta.app
+        confdir: Library/Application Support/Google/Chrome Beta
+      canary:
+        bin: /Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome
+        installation: /Applications/Google Chrome Canary.app
+        confdir: Library/Application Support/Google/Chrome Canary
+      dev:
+        bin: /Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome
+        installation: /Applications/Google Chrome Dev.app
+        confdir: Library/Application Support/Google/Chrome Dev
+      stable:
+        bin: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+        installation: /Applications/Google Chrome.app
+        confdir: Library/Application Support/Google/Chrome
+    pkg:
+      beta:
+        name: homebrew/cask-versions/google-chrome-beta
+      canary:
+        name: homebrew/cask-versions/google-chrome-canary
+      dev:
+        name: homebrew/cask-versions/google-chrome-dev
+      stable:
+        name: homebrew/cask/google-chrome
+      manager: brew
+    rootgroup: {{ salt['cmd.run']("stat -f '%Sg' /dev/console") }}
+...

@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set values specific to:
+#   salt['config.get']('os') == Windows.
+#
+# You just need to add the key:values for this `os` that differ
+# from `defaults.yaml` + `<osarch>.yaml` + `<os_family>.yaml`.
+#
+# If you do not need to provide defaults via the `os` config,
+# you can remove this file or provide at least an empty dict, e.g.
+# values: {}
+---
+values:
+  lookup:
+    paths:
+      beta:
+        bin: C:/Program Files/Google/Chrome Beta/Application/chrome.exe
+        installation: C:/Program Files/Google/Chrome Beta
+        confdir: AppData/Local/Google/Chrome Beta/User Data
+      canary:
+        bin: C:/Program Files/Google/Chrome Canary/Application/chrome.exe
+        installation: C:/Program Files/Google/Chrome Canary
+        confdir: AppData/Local/Google/Chrome SxS/User Data
+      dev:
+        bin: C:/Program Files/Google/Chrome Dev/Application/chrome.exe
+        installation: C:/Program Files/Google/Chrome Dev
+        confdir: AppData/Local/Google/Chrome Dev/User Data
+      stable:
+        bin: C:/Program Files/Google/Chrome/Application/chrome.exe
+        installation: C:/Program Files/Google/Chrome
+        confdir: AppData/Local/Google/Chrome/User Data
+    pkg:
+      beta:
+        name: googlechromebeta
+        pre: true
+      canary:
+        name: googlechrome.canary
+        pre: false
+      dev:
+        name: googlechrome.dev
+        pre: false
+      stable:
+        name: googlechrome
+        pre: false
+      manager: chocolatey
+    win_gpo:
+      hash: ''
+      lang: en_US
+      owner: Administrators
+      policy_dir: C:/Windows/PolicyDefinitions
+      source: https://dl.google.com/dl/edgedl/chrome/policy/policy_templates.zip
+...
