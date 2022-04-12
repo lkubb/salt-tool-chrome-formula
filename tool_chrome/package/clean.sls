@@ -5,6 +5,9 @@
 {%- set tplroot = tpldir.split('/')[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as chrome with context %}
 
+include:
+  - {{ slsdotpath }}.repo.clean
+
 
 {%- if 'Windows' == grains.os %}
 

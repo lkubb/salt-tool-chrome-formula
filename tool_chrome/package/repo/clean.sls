@@ -15,6 +15,7 @@ include:
 
 {%- else %}
 
+
 {%-   for reponame, repodata in chrome.lookup.pkg.repos.items() %}
 
 Google Chrome {{ reponame }} repository is absent:

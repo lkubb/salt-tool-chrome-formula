@@ -5,6 +5,7 @@
 {%- set tplroot = tpldir.split('/')[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as chrome with context %}
 
+
 {%- if grains['os'] in ['Debian', 'Ubuntu'] %}
 
 Ensure Google Chrome APT repository can be managed:
@@ -18,7 +19,7 @@ Ensure Google Chrome APT repository can be managed:
 
 {%- for reponame in chrome.lookup.pkg.enablerepo %}
 
-Google Chrome {{ repo }} repository is available:
+Google Chrome {{ reponame }} repository is available:
   pkgrepo.managed:
 {%-   for conf, val in chrome.lookup.pkg.repos[reponame].items() %}
     - {{ conf }}: {{ val }}
