@@ -11,18 +11,31 @@ include:
 
 {%- for user in chrome.users %}
 
-Google Chrome has generated the default profile for user '{{ user.name }}':
+Google Chrome has been run once for user '{{ user.name }}':
   cmd.run:
     - name: |
-        "{{ chrome._bin }}" &
-        while [ ! -d '{{ user._chrome.confdir | path_join('Default') }}' ]; do
-          sleep 1;
-        done
-        sleep 1
-        killall "$(basename '{{ chrome._bin }}')"
+        "{{ chrome._bin }}"
     - runas: {{ user.name }}
+    - bg: true
+    - timeout: 20
     - require:
       - sls: {{ sls_package_install }}
-    - unless:
-      - test -d '{{ user._chrome.confdir | path_join('Default') }}'
+    - creates:
+      - {{ user._chrome.confdir | path_join("Default") }}
+
+Google Chrome has generated the default profile for user '{{ user.name }}':
+  file.exists:
+    - name: {{ user._chrome.confdir | path_join("Default") }}
+    - retry:
+        attempts: 10
+        interval: 1
+    - require:
+      - Google Chrome has been run once for user '{{ user.name }}'
+
+Google Chrome is not running for user '{{ user.name }}':
+  process.absent:
+    - name: {{ salt["file.basename"](chrome._bin) }}
+    - user: {{ user.name }}
+    - onchanges:
+      - Google Chrome has been run once for user '{{ user.name }}'
 {%- endfor %}
