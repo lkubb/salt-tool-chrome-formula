@@ -1,27 +1,26 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as chrome with context %}
 
-{%- set require_local_sync = chrome.get('_local_extensions') | to_bool
+{%- set require_local_sync = chrome.get("_local_extensions") | to_bool
                          and chrome.extensions.local.sync | to_bool %}
 
-{%- if 'Windows' == grains.kernel or require_local_sync %}
+{%- if "Windows" == grains.kernel or require_local_sync %}
 
 include:
 {%-   if require_local_sync %}
   - {{ tplroot }}.local_extensions
 {%-   endif %}
-{%-   if 'Windows' == grains.kernel %}
+{%-   if "Windows" == grains.kernel %}
   - {{ slsdotpath }}.winadm
 {%-   endif %}
 {%- endif %}
 
 
-{%- if chrome.get('_policies') %}
-{%-   if 'Windows' == grains.kernel %}
-{%-     if chrome._policies.get('forced') %}
+{%- if chrome.get("_policies") %}
+{%-   if "Windows" == grains.kernel %}
+{%-     if chrome._policies.get("forced") %}
 
 Google Chrome forced policies are applied as Group Policy:
   lgpo.set:
@@ -36,7 +35,7 @@ Google Chrome forced policies are applied as Group Policy:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if chrome._policies.get('recommended') %}
+{%-     if chrome._policies.get("recommended") %}
 
 Google Chrome recommended policies are applied as Group Policy:
   lgpo.set:
@@ -56,8 +55,8 @@ Group policies are updated:
     - name: gpupdate /wait:0
     - watch: []
 
-{%-   elif 'Darwin' == grains.kernel %}
-{%-     if chrome._policies.get('forced') %}
+{%-   elif "Darwin" == grains.kernel %}
+{%-     if chrome._policies.get("forced") %}
 
 Google Chrome forced policies are applied as profile:
   macprofile.installed:
@@ -75,7 +74,7 @@ Google Chrome forced policies are applied as profile:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if chrome._policies.get('recommended') %}
+{%-     if chrome._policies.get("recommended") %}
 
 Google Chrome recommended policies are applied as plist:
   file.serialize:
@@ -99,7 +98,7 @@ MacOS plist cache is updated for Chrome:
 {%-     endif %}
 
 {%-   else %}
-{%-     if chrome._policies.get('forced') %}
+{%-     if chrome._policies.get("forced") %}
 
 Google Chrome enforced policies are synced to json file:
   file.serialize:
@@ -116,7 +115,7 @@ Google Chrome enforced policies are synced to json file:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if chrome._policies.get('recommended') %}
+{%-     if chrome._policies.get("recommended") %}
 
 Google Chrome recommended policies are synced to json file:
   file.serialize:

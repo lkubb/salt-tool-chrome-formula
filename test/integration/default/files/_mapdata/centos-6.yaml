@@ -72,6 +72,8 @@ values:
     paths:
       confdir: '.config/google-chrome'
       conffile: 'config'
+      xdg_dirname: 'google-chrome'
+      xdg_conffile: 'config'
     rootgroup: root
   map_jinja:
     sources:
