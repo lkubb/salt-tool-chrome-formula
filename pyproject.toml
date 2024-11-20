@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "salt_tool_chrome"
+name = "tool_chrome_formula"
 version = "1.0.0"
 description = "Saltstack states to manage Google Chrome"
 authors = ["lkubb"]
